@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Ensures the browser background is invisible in PRISM */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent; 
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 80%; /* Adjust based on your 'Border' layout needs */
+            max-width: 600px;
+            height: auto;
+
+            /* CHROMA KEY FILTER: This targets the neon green.
+               We use hue-rotate and contrast to 'kill' the green 
+               without washing out the puzzle piece textures. */
+            filter: chroma-green; /* Conceptual; use the values below */
+            filter: brightness(1.1) contrast(1.1) hue-rotate(110deg) saturate(1.5) opacity(0.95);
+            
+            /* If the green is still slightly visible, 
+               this secondary blend mode helps it disappear into the stream */
+            mix-blend-mode: screen; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <video autoplay loop muted playsinline>
+            <source src="314.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+</body>
+</html>

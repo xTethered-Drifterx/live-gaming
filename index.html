@@ -27,19 +27,14 @@
         }
 
         video {
-            width: 80%; /* Adjust based on your 'Border' layout needs */
-            max-width: 600px;
-            height: auto;
-
-            /* CHROMA KEY FILTER: This targets the neon green.
-               We use hue-rotate and contrast to 'kill' the green 
-               without washing out the puzzle piece textures. */
-            filter: chroma-green; /* Conceptual; use the values below */
-            filter: brightness(1.1) contrast(1.1) hue-rotate(110deg) saturate(1.5) opacity(0.95);
-            nmt
-            /* If the green is still slightly visible, 
-               this secondary blend mode helps it disappear into the stream */
-            mix-blend-mode: screen; 
+    width: 100%;
+    height: auto;
+    
+    /* This tighter filter should help kill that blue/teal tint */
+    filter: brightness(1.2) contrast(1.5) hue-rotate(130deg) saturate(1.8);
+    
+    /* This is the key: it blends the video into the game behind it */
+    mix-blend-mode: screen; 
         }
     </style>
 </head>

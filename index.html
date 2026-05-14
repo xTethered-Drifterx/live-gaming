@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Invisible background for the web page itself */
         body {
             margin: 0;
             padding: 0;
-            background-color: transparent; 
+            background-color: transparent !important;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -18,23 +15,21 @@
         }
 
         video {
-            /* Adjust this percentage to change logo size on your screen */
-            width: 100%; 
+            width: 100%;
             height: auto;
 
-            /* THE MAGIC LINE: This removes the black background perfectly 
-               and blends the logo details with the gameplay behind it. */
+            /* 1. This is the primary way to remove black */
             mix-blend-mode: screen; 
 
-            /* Boosts the brightness of the circuit boards and lightning 
-               to make them pop against the game footage */
-            filter: brightness(1.3) contrast(1.2);
+            /* 2. ADDED: This is a fallback filter that helps 
+               remove any 'gray' or 'dark' pixels that mix-blend-mode missed */
+            filter: contrast(1.1) brightness(1.1);
         }
     </style>
 </head>
 <body>
 
-    <video autoplay loop muted playsinline>
+    <video autoplay loop muted playsinline id="logoVideo">
         <source src="366.webm" type="video/webm">
     </video>
 

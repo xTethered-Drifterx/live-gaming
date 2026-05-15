@@ -2,36 +2,63 @@
 <html>
 <head>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: transparent !important;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        video {
-            width: 100%;
+        /* Ensures the overlay is visible and correctly sized */
+        body { margin: 0; background-color: transparent; overflow: hidden; }
+        #output-canvas {
+            display: block;
+            width: 100vw; /* Adjust width as needed for your stream layout */
             height: auto;
-
-            /* 1. This is the primary way to remove black */
-            mix-blend-mode: screen; 
-
-            /* 2. ADDED: This is a fallback filter that helps 
-               remove any 'gray' or 'dark' pixels that mix-blend-mode missed */
-            filter: contrast(1.1) brightness(1.1);
+            image-rendering: crisp-edges; /* Keeps the wood/metal textures sharp */
         }
     </style>
 </head>
 <body>
 
-    <video autoplay loop muted playsinline id="logoVideo">
+    <video id="video-source" autoplay loop muted playsinline style="display:none;">
         <source src="366.webm" type="video/webm">
     </video>
 
+    <canvas id="output-canvas"></canvas>
+
+    <script>
+        const video = document.getElementById('video-source');
+        const canvas = document.getElementById('output-canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+        function computeFrame() {
+            if (video.paused || video.ended) return;
+
+            // 1. Draw the current video frame to the canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // 2. Get the pixel data
+            const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const length = frame.data.length / 4;
+
+            for (let i = 0; i < length; i++) {
+                const r = frame.data[i * 4 + 0];
+                const g = frame.data[i * 4 + 1];
+                const b = frame.data[i * 4 + 2];
+
+                // 3. BLACK CHROMA KEY LOGIC
+                // Threshold 35: If R, G, and B are all below 35, make it transparent.
+                // Increase this number if you see 'shadowy' artifacts around the logo.
+                if (r < 35 && g < 35 && b < 35) {
+                    frame.data[i * 4 + 3] = 0; // Set Alpha to 0
+                }
+            }
+
+            // 4. Paint the 'cleaned' pixels back to the canvas
+            ctx.putImageData(frame, 0, 0);
+            requestAnimationFrame(computeFrame);
+        }
+
+        // Initialize canvas size based on the video's actual dimensions
+        video.addEventListener('play', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            computeFrame();
+        });
+    </script>
 </body>
 </html>
